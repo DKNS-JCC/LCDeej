@@ -1,9 +1,0 @@
-#line 1 "C:\\Users\\jorge\\Desktop\\own_deej\\.vscode\\arduino.json"
-{
-    "configuration": "cpu=atmega328old",
-    "board": "arduino:avr:nano",
-    "sketch": "own_deej.ino",
-    "port": "COM5",
-    "programmer": "avrisp",
-    "output": "./build"
-}
