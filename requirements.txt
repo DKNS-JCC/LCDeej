@@ -1,0 +1,7 @@
+ctypes
+asyncio
+winrt
+pyserial
+pystray
+Pillow
+pycaw
