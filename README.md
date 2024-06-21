@@ -21,28 +21,23 @@ Also built in Python.
 ## Installation
 
 For new users without python and pip:
+Download and install python3.9 https://www.python.org/downloads/
 
 ```bash
-  # Download and install python3.9 https://www.python.org/downloads/
-
-    # Verify the install
         python --version
         pip --version
 
 ```
 If you already have python installed:
 ```bash
-    #Install required libs
         pip install -r requirements.txt
 ```
 Now lets flash our Arduino board:
 ```bash
-    #Install Arduino IDE or VSCode Extension and ensure COMX is free
         open own_dej.ino -> Verify -> Upload
 ```
 Modify line COM_PORT = COMX to your own port and run:
 ```bash
-    #Execute program
         python3.9 deej.py
 ```
 
