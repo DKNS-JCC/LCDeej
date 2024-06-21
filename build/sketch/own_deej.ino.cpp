@@ -8,7 +8,8 @@
 #define LCD_COLUMNS 16
 #define LCD_ROWS 2
 
-byte cross[8] = {
+//JEJE
+byte cross [8] = {
   B00000,
   B10001,
   B01010,
@@ -19,18 +20,29 @@ byte cross[8] = {
   B00000
 };
 
+byte on [8] = {
+  B00000,
+  B00100,
+  B01110,
+  B10101,
+  B10001,
+  B01110,
+  B00000,
+  B00000
+};
+
 LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLUMNS, LCD_ROWS);
 
 String song = "";
 unsigned long previousMillis = 0;
 
-#line 25 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
+#line 37 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
 void setup();
-#line 33 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
-void loop();
 #line 45 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
+void loop();
+#line 57 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
 void showMessage(String message);
-#line 25 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
+#line 37 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
 void setup()
 {
   Serial.begin(9600);
@@ -74,6 +86,13 @@ void showMessage(String message)
     lcd.print("Martin Garrix +");
     lcd.createChar(0, cross);
     lcd.setCursor(15,1);
+    lcd.write(byte(0));
+  }
+  else if(artist == "Justin Mylo")
+  {
+    lcd.print("Justin Mylo");
+    lcd.createChar(0, on);
+    lcd.setCursor(12,1);
     lcd.write(byte(0));
   }
   else

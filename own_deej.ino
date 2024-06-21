@@ -7,13 +7,24 @@
 #define LCD_ROWS 2
 
 //JEJE
-byte cross[8] = {
+byte cross [8] = {
   B00000,
   B10001,
   B01010,
   B00100,
   B01010,
   B10001,
+  B00000,
+  B00000
+};
+
+byte on [8] = {
+  B00000,
+  B00100,
+  B01110,
+  B10101,
+  B10001,
+  B01110,
   B00000,
   B00000
 };
@@ -66,6 +77,13 @@ void showMessage(String message)
     lcd.print("Martin Garrix +");
     lcd.createChar(0, cross);
     lcd.setCursor(15,1);
+    lcd.write(byte(0));
+  }
+  else if(artist == "Justin Mylo")
+  {
+    lcd.print("Justin Mylo");
+    lcd.createChar(0, on);
+    lcd.setCursor(12,1);
     lcd.write(byte(0));
   }
   else

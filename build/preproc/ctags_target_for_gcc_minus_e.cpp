@@ -9,13 +9,25 @@
 
 
 # 9 "C:\\Users\\jorge\\Desktop\\own_deej\\own_deej.ino"
-byte cross[8] = {
+//JEJE
+byte cross [8] = {
   0,
   17,
   10,
   4,
   10,
   17,
+  0,
+  0
+};
+
+byte on [8] = {
+  0,
+  4,
+  14,
+  21,
+  17,
+  14,
   0,
   0
 };
@@ -68,6 +80,13 @@ void showMessage(String message)
     lcd.print("Martin Garrix +");
     lcd.createChar(0, cross);
     lcd.setCursor(15,1);
+    lcd.write(byte(0));
+  }
+  else if(artist == "Justin Mylo")
+  {
+    lcd.print("Justin Mylo");
+    lcd.createChar(0, on);
+    lcd.setCursor(12,1);
     lcd.write(byte(0));
   }
   else
