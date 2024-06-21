@@ -1,10 +1,24 @@
-import asyncio
-from winrt.windows.media.control import \
-    GlobalSystemMediaTransportControlsSessionManager as MediaManager
 
+#Proyect developed by: DKNSJCC
+#Date: 2024-06-24
+#Time Spent: 2 hours
+
+#Description: This script allows you to display the song title and artist on an LCD screen connected to an Arduino, 
+#while controlling the volume of the system with a potentiometer connected to the Arduino. 
+#The script uses the Windows Media Control API to get the song information and the PySerial library to communicate with the Arduino. 
+#The script also uses the PyStray library to create a system tray icon that allows you to exit the script and run in background.
+
+
+#Audio dependencies
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import asyncio
+from winrt.windows.media.control import GlobalSystemMediaTransportControlsSessionManager as MediaManager
+
+#Arduino dependencies
 import serial
 import time
 
+#icon dependencies
 import pystray
 from pystray import MenuItem as item
 from PIL import Image
@@ -24,7 +38,7 @@ async def monitor_media_session():
     print("Media session monitoring started...")
     while True:
         try:
-            sessions = await MediaManager.request_async() #deadlock aquí (SOLVED by PC restart )
+            sessions = await MediaManager.request_async() #deadlock aquí (SOLVED by PC restart)
             current_session = sessions.get_current_session()
             
             if current_session and current_session.source_app_user_model_id == "Spotify.exe":  # Modifica esto para tu reproductor de música
@@ -35,7 +49,9 @@ async def monitor_media_session():
                     print(formatted_string)
                     ser.write(formatted_string.encode('utf-8')) #fallo primera vez que se ejecuta
             else:
-                print("No active media session found")
+                #funcionalidad deej volumenes (leer de serial)
+                break
+                
             if exit_flag == 1:
                 break
 
@@ -48,6 +64,19 @@ async def monitor_media_session():
     print("Exiting...")
     ser.close()
     print("Serial port closed. \nMonitor media session terminated.")
+    
+    
+# def set_volume(process_name, volume_level):
+#     # List all audio sessions
+#     sessions = AudioUtilities.GetAllSessions()
+#     for session in sessions:
+#         process = session.Process
+#         if process and process.name().lower() == process_name.lower():
+#             volume = session.SimpleAudioVolume
+#             volume.SetMasterVolume(volume_level, None)
+#             print(f"Volume for {process_name} set to {volume_level * 100}%")
+#             return
+#     print(f"Process {process_name} not found.")
         
 def start_icon():
     icon.run()
