@@ -33,7 +33,6 @@ async def monitor_media_session():
                 if info['title'] != old_title:
                     formatted_string = f"*{info['title']}*{info['artist']}"
                     print(formatted_string)
-                    time.sleep(0.5)
                     ser.write(formatted_string.encode('utf-8')) #fallo primera vez que se ejecuta
             else:
                 print("No active media session found")
