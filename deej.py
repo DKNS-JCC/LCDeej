@@ -10,7 +10,7 @@
 
 
 #Audio dependencies
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from ctypes import cast, POINTER
 import asyncio
 from winrt.windows.media.control import GlobalSystemMediaTransportControlsSessionManager as MediaManager
 
@@ -47,9 +47,21 @@ async def monitor_media_session():
                 if info['title'] != old_title:
                     formatted_string = f"*{info['title']}*{info['artist']}"
                     print(formatted_string)
-                    ser.write(formatted_string.encode('utf-8')) #fallo primera vez que se ejecuta
+                    ser.write(formatted_string.encode('utf-8')) #fallo primera vez que se ejecuta 
+                    time.sleep(0.5) #esperar a que el arduino procese la información (fallo de buffer en arduino
             else:
                 #funcionalidad deej volumenes (leer de serial)
+                volume = ser.readline().decode('utf-8').strip() #leer de serial y convertir a string
+                volume.split("|") #separar por el caracter |
+                
+                volume1 = int(volume[0]) 
+                volume2 = int(volume[1])
+                volume3 = int(volume[2])
+                volume4 = int(volume[3])
+                
+                #Modify to your process names
+                set_volume("Spotify.exe", 100)
+                
                 break
                 
             if exit_flag == 1:
@@ -66,17 +78,17 @@ async def monitor_media_session():
     print("Serial port closed. \nMonitor media session terminated.")
     
     
-# def set_volume(process_name, volume_level):
-#     # List all audio sessions
-#     sessions = AudioUtilities.GetAllSessions()
-#     for session in sessions:
-#         process = session.Process
-#         if process and process.name().lower() == process_name.lower():
-#             volume = session.SimpleAudioVolume
-#             volume.SetMasterVolume(volume_level, None)
-#             print(f"Volume for {process_name} set to {volume_level * 100}%")
-#             return
-#     print(f"Process {process_name} not found.")
+def set_volume(process_name, volume_level):
+    from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
+    sessions = AudioUtilities.GetAllSessions()
+    for session in sessions:
+        process = session.Process
+        if process and process.name().lower() == process_name.lower():
+            volume = session.SimpleAudioVolume
+            volume.SetMasterVolume(volume_level, None)
+            print(f"Volume for {process_name} set to {volume_level * 100}%")
+            return
+    print(f"Process {process_name} not found.")
         
 def start_icon():
     icon.run()
@@ -86,14 +98,19 @@ def exit_action(icon, item):
     icon.stop()  # Detener el icono en la bandeja del sistema
     exit_flag = 1  # Establecer la bandera de salida
     
-    
+#Main function
 if __name__ == '__main__':
+    
     flag = 0
     thread_count = 1
+    
     image = Image.open("ico.png") #Change ico.png for custom icon  
     menu = (item('Salir', exit_action))
     icon = pystray.Icon("LCDeej", image, "LCDeej", menu=pystray.Menu(pystray.MenuItem("Salir", exit_action)))
     icon_thread = threading.Thread(target=start_icon)
+    
+    
+    
     while flag == 0:
         try:
             if thread_count == 1:
