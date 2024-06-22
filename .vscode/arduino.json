@@ -1,8 +1,0 @@
-{
-    "configuration": "cpu=atmega328old",
-    "board": "arduino:avr:nano",
-    "sketch": "own_deej.ino",
-    "port": "COM5",
-    "programmer": "avrisp",
-    "output": "./build"
-}
