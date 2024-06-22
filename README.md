@@ -26,7 +26,7 @@ LCDeej is an enhanced version of the [Deej app](https://github.com/omriharel/dee
 
 ### Instructions for Assembling the Potentiometers
 
-![Image](https://raw.githubusercontent.com/DKNS-JCC/LCDeej/main/icon.ico) 
+![Image](https://raw.githubusercontent.com/DKNS-JCC/LCDeej/main/Sketch.png) 
 
 1. **Prepare the Potentiometers:**
    - Gather your four 10k potentiometers.
