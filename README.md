@@ -14,14 +14,15 @@ Also built in Python.
 
 - LCD power off with time
 - Fully customisable code with comments
-- Low resource execution
+- Control your app volume separately
+- Low resource execution in background
 - Windows support (10+) 
 
 
 ## Installation
 
 For new users without python and pip:
-Download and install python3.9 https://www.python.org/downloads/
+Download and install python3.9 https://www.python.org/downloads/release/python-3919/
 
 ```bash
         python --version
@@ -52,11 +53,11 @@ or run .exe on releases.
 
 #### It stopped detecting my Arduino Board
 
-First close running app, then reconnect arduino and restart app
+-First close running app, then reconnect arduino and restart app
 
 #### App stopped working
 
-Rebooting your PC fixes almost everything, open an issue if it is still happening 
+-Rebooting your PC fixes almost everything, open an issue if it is still happening 
 
 
 ## Used tech
