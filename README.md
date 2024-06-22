@@ -9,19 +9,10 @@ Control your audio sessions with the spin of a Wheel!
 LCDeej is an enhanced version of the [Deej app](https://github.com/omriharel/deej) developed by omriharel, now with an added LCD screen for Arduino. This feature transforms your setup into a multimedia hub, displaying song titles and authors. The application is also built using Python.
 
 ## Features
-
-<<<<<<< HEAD
-- LCD power off with time
-- Fully customisable code with comments
-- Control your app volume separately
-- Low resource execution in background
-- Windows support (10+) 
-=======
 - **LCD Power Management:** Automatic LCD power-off after a set time to save energy.
 - **Customizable Code:** Fully commented and easy to modify to fit your specific needs.
 - **Efficient Resource Usage:** Optimized to run with minimal system resources.
 - **Windows Support:** Compatible with Windows 10 and later versions.
->>>>>>> 14f1e1515751beed70c5fef6d1c819cedd8d313d
 
 ## Build Your Own
 
