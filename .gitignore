@@ -1,2 +1,4 @@
 build/
 test.py
+.vscode/
+.theia/
