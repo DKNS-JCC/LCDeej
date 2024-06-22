@@ -27,6 +27,8 @@ import threading
 COM_PORT = 'COM5' #Modify this to your COM port
 
 exit_flag = 0
+n1=n2=n3=n4=0
+
 
 async def get_media_info(session):
     info = await session.try_get_media_properties_async()
@@ -48,27 +50,16 @@ async def monitor_media_session():
                     formatted_string = f"*{info['title']}*{info['artist']}"
                     print(formatted_string)
                     ser.write(formatted_string.encode('utf-8')) #fallo primera vez que se ejecuta 
-                    time.sleep(0.5) #esperar a que el arduino procese la información (fallo de buffer en arduino
+                    time.sleep(0.5) #esperar a que el arduino procese la información (fallo de buffer en arduino)
             else:
-                #funcionalidad deej volumenes (leer de serial)
-                volume = ser.readline().decode('utf-8').strip() #leer de serial y convertir a string
-                volume.split("|") #separar por el caracter |
-                
-                volume1 = int(volume[0]) 
-                volume2 = int(volume[1])
-                volume3 = int(volume[2])
-                volume4 = int(volume[3])
-                
-                #Modify to your process names
-                set_volume("Spotify.exe", 100)
-                
+                print("No media session found")
                 break
                 
             if exit_flag == 1:
                 break
 
         except Exception as e:
-            print(f"An error occurred while monitoring media session: {e}")
+            print(f"An error occurred while monitoring media session: {type(e)} {e} ")
 
         await asyncio.sleep(1)
 
@@ -77,26 +68,100 @@ async def monitor_media_session():
     ser.close()
     print("Serial port closed. \nMonitor media session terminated.")
     
-    
-def set_volume(process_name, volume_level):
-    from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
-    sessions = AudioUtilities.GetAllSessions()
-    for session in sessions:
-        process = session.Process
-        if process and process.name().lower() == process_name.lower():
-            volume = session.SimpleAudioVolume
-            volume.SetMasterVolume(volume_level, None)
-            print(f"Volume for {process_name} set to {volume_level * 100}%")
-            return
-    print(f"Process {process_name} not found.")
+def scale_value(value, from_min, from_max, to_min, to_max):
+    # Escalar el valor de una escala a otra
+    scaled_value = (value - from_min) * (to_max - to_min) / (from_max - from_min) + to_min
+    return scaled_value
+
+def process_serial(data):
+    try:
+        if data.startswith('*'):
+            return None, None, None, None
+        values = list(map(int, data.strip().split('|')))
+        if len(values) != 4:
+            raise ValueError("The data must contain exactly four numbers")
         
+        scaled_values = [scale_value(v, 0, 1023, 0, 100) for v in values]
+
+        # Separar en variables
+        n1, n2, n3, n4 = scaled_values
+        return n1, n2, n3, n4
+    except ValueError as e:
+        print(f"Error processing data: {e}")
+        return None, None, None, None
+
+    
+    
+async def set_volume():
+    from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
+    from comtypes import CLSCTX_ALL, CoInitialize, CoUninitialize
+    from ctypes import cast, POINTER
+    
+    print("Volume control started...")
+
+    # Inicializar la librería COM
+    CoInitialize()
+    
+    try:
+        while not exit_flag:
+            if ser.in_waiting > 0:
+                # Leer una línea desde el puerto serial
+                serial_data = ser.read_until("\n").decode('utf-8')
+                print(f"Received: {serial_data.strip()}")
+                global n1, n2, n3, n4
+                n1, n2, n3, n4 = process_serial(serial_data)
+                if None not in (n1, n2, n3, n4):
+                    print(f"n1: {n1:.2f}, n2: {n2:.2f}, n3: {n3:.2f}, n4: {n4:.2f}")
+                
+            sessions = AudioUtilities.GetAllSessions()
+            for session in sessions:
+                if session.Process and session.Process.name().lower() == "spotify.exe":
+                    volume = session.SimpleAudioVolume
+                    if n2 is None:
+                        volume.SetMasterVolume(1, None) #0 to 1.0 relative volume master
+                    else:
+                        volume.SetMasterVolume(n2/100, None)
+                    print(f"Volume set to {n2:.2f}")
+
+                elif session.Process and session.Process.name().lower() == "brave.exe":
+                    volume = session.SimpleAudioVolume
+                    if n3 is None:
+                        volume.SetMasterVolume(1, None)
+                    else:
+                        volume.SetMasterVolume(n3/100, None)
+                    print(f"Volume set to {n3:.2f}")
+                    
+                elif session.Process and session.Process.name().lower() == "discord.exe":
+                    volume = session.SimpleAudioVolume
+                    if n4 is None:
+                        volume.SetMasterVolume(1, None)
+                    else:
+                        volume.SetMasterVolume(n4/100, None)
+                    print(f"Volume set to {n4:.2f}")
+
+            await asyncio.sleep(1)
+
+    except Exception as e:
+        print(f"An error occurred while setting volume: {type(e)} {e}")
+
+    finally:
+        # Desinicializar la librería COM
+        CoUninitialize()
+        
+def run_volume_control():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(set_volume())
+        
+    
 def start_icon():
+    print("Icon started...")
     icon.run()
 
 def exit_action(icon, item):
     global exit_flag
-    icon.stop()  # Detener el icono en la bandeja del sistema
-    exit_flag = 1  # Establecer la bandera de salida
+    icon.stop()
+    exit_flag = 1  
     
 #Main function
 if __name__ == '__main__':
@@ -109,20 +174,21 @@ if __name__ == '__main__':
     icon = pystray.Icon("LCDeej", image, "LCDeej", menu=pystray.Menu(pystray.MenuItem("Salir", exit_action)))
     icon_thread = threading.Thread(target=start_icon)
     
+    volume_thread = threading.Thread(target=run_volume_control)
+    
     
     
     while flag == 0:
         try:
-            if thread_count == 1:
-                icon_thread.start()
-                thread_count = 0
             ser= serial.Serial(COM_PORT, 9600,timeout=1) 
-            flag = 1
+            icon_thread.start()
+            volume_thread.start()
             asyncio.run(monitor_media_session())
             
         except KeyboardInterrupt:
             print("Monitoring stopped by user")
             icon.stop()
+            exit_flag = 1
             break
         except Exception as e:
             print(f"No device detected in {COM_PORT} check connection: {e}")
