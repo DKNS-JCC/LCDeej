@@ -37,6 +37,16 @@ byte alien[8] = {
     B00000,
     B00000};
 
+byte adn [8] = {
+    B01010,
+    B10001,
+    B01010,
+    B00100,
+    B01010,
+    B10001,
+    B01010,
+    B00000};
+
 LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLUMNS, LCD_ROWS);
 
 String song = "";
@@ -111,6 +121,13 @@ void showMessage(String message)
     lcd.print("AREA21");
     lcd.createChar(0, alien);
     lcd.setCursor(7, 1);
+    lcd.write(byte(0));
+  }
+  else if (artist == "Mike Williams")
+  {
+    lcd.print("Mike Williams");
+    lcd.createChar(0, adn);
+    lcd.setCursor(14, 1);
     lcd.write(byte(0));
   }
   else
