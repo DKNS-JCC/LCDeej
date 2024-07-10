@@ -1,5 +1,5 @@
 
-![Logo](https://raw.githubusercontent.com/DKNS-JCC/LCDeej/main/icon.ico)
+![Logo](https://github.com/DKNS-JCC/LCDeej/blob/main/resources/Sketch.png)
 
 
 # LCDeej
