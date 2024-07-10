@@ -1,5 +1,5 @@
 
-![Logo](https://github.com/DKNS-JCC/LCDeej/blob/main/resources/Sketch.png)
+![Logo](https://github.com/DKNS-JCC/LCDeej/blob/main/resources/icon.png)
 
 
 # LCDeej
@@ -25,7 +25,7 @@ LCDeej is an enhanced version of the [Deej app](https://github.com/omriharel/dee
 
 ### Instructions for Assembling the Potentiometers
 
-![Image](https://raw.githubusercontent.com/DKNS-JCC/LCDeej/main/Sketch.png) 
+![Image](https://github.com/DKNS-JCC/LCDeej/blob/main/resources/Sketch.png)
 
 1. **Prepare the Potentiometers:**
    - Gather your four 10k potentiometers.
